@@ -1,0 +1,49 @@
+### Get all movies
+GET http://localhost:3000/movies
+
+### Get movie by ID
+GET http://localhost:3000/movies/1
+
+### Movie that does not exist
+GET http://localhost:3000/movies/999
+
+### Create a new movie
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Blade Runner",
+  "director": "Ridley Scott",
+  "year": 1982
+}
+
+### Get all movies again (check that Blade Runner is there)
+GET http://localhost:3000/movies
+
+### Invalid movie
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "director": "Nobody"
+}
+
+### Update a movie
+PATCH http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "year": 2011
+}
+
+### Check that the movie was updated
+GET http://localhost:3000/movies/1
+
+### Delete a movie
+DELETE http://localhost:3000/movies/1
+
+### Check that the movie was deleted (should be 404)
+GET http://localhost:3000/movies/1
+
+### Check all movies after delete
+GET http://localhost:3000/movies
