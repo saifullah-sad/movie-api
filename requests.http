@@ -1,34 +1,55 @@
-### Get all movies
+# Movie API tests (Week 2)
+# To repeat the tests: stop the server (Ctrl + C), start it again with "node app.js"
+# so that the data is reset to the 5 starting movies, then run the requests.
+# Tests 12-22 (filter and sort) were run on the fresh 5 starting movies.
+
+### 1. Get all movies
 GET http://localhost:3000/movies
 
-### Get movie by ID
+### 2. Get one existing movie
 GET http://localhost:3000/movies/1
 
-### Movie that does not exist
+### 3. Get a missing movie
 GET http://localhost:3000/movies/999
 
-### Create a new movie
+### 4. Create a valid movie
 POST http://localhost:3000/movies
 Content-Type: application/json
 
 {
-  "title": "Blade Runner",
-  "director": "Ridley Scott",
-  "year": 1982
+  "title": "Arrival",
+  "year": 2016,
+  "genre": "Sci-Fi"
 }
 
-### Get all movies again (check that Blade Runner is there)
-GET http://localhost:3000/movies
-
-### Invalid movie
+### 5. Create an invalid movie
 POST http://localhost:3000/movies
 Content-Type: application/json
 
 {
-  "director": "Nobody"
+  "title": "",
+  "year": "not a number"
 }
 
-### Update a movie
+### 6. Replace a movie with PUT
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": "Inception: Updated Edition",
+  "year": 2010,
+  "genre": "Sci-Fi"
+}
+
+### 7. Invalid incomplete PUT
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": "The Matrix"
+}
+
+### 8. Partially update a movie with PATCH
 PATCH http://localhost:3000/movies/1
 Content-Type: application/json
 
@@ -36,14 +57,58 @@ Content-Type: application/json
   "year": 2011
 }
 
-### Check that the movie was updated
-GET http://localhost:3000/movies/1
+### 9. Invalid PATCH
+PATCH http://localhost:3000/movies/1
+Content-Type: application/json
 
-### Delete a movie
-DELETE http://localhost:3000/movies/1
+{
+  "year": "abc"
+}
 
-### Check that the movie was deleted (should be 404)
-GET http://localhost:3000/movies/1
+### 10. Delete an existing movie
+DELETE http://localhost:3000/movies/5
 
-### Check all movies after delete
+### 11. Delete the same movie again
+DELETE http://localhost:3000/movies/5
+
+### 12. Filter by genre
+GET http://localhost:3000/movies?genre=Sci-Fi
+
+### 13. Filter by genre (lower case, must give the same result)
+GET http://localhost:3000/movies?genre=sci-fi
+
+### 14. Filter by minimum year
+GET http://localhost:3000/movies?minYear=2000
+
+### 15. Filter by genre and minimum year
+GET http://localhost:3000/movies?genre=Sci-Fi&minYear=2000
+
+### 16. Sort by year
+GET http://localhost:3000/movies?sort=year
+
+### 17. Sort by title
+GET http://localhost:3000/movies?sort=title
+
+### 18. Filter and sort together
+GET http://localhost:3000/movies?genre=Sci-Fi&minYear=2000&sort=year
+
+### 19. No movie matches (empty array)
+GET http://localhost:3000/movies?genre=Horror
+
+### 20. Invalid minYear
+GET http://localhost:3000/movies?minYear=invalid
+
+### 21. Invalid sort value
+GET http://localhost:3000/movies?sort=rating
+
+### 22. Original order is unchanged after sorting
 GET http://localhost:3000/movies
+
+### 23. Unknown route
+GET http://localhost:3000/does-not-exist
+
+### 24. Broken JSON in the request body (error-handling middleware)
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{ "title": "Broken movie",
